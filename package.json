@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+		"test": "jest --setupFiles dotenv/config --verbose false"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,10 @@
   },
   "homepage": "https://github.com/mikolertesx/testing-repository-6g#readme",
   "devDependencies": {
+    "dotenv": "^10.0.0",
     "jest": "^27.0.6"
+  },
+  "dependencies": {
+    "axios": "^0.21.1"
   }
 }
