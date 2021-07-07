@@ -1,0 +1,22 @@
+{
+  "name": "testing-repository-6g",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikolertesx/testing-repository-6g.git"
+  },
+  "author": "Miguel Angel Guerrero Salinas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mikolertesx/testing-repository-6g/issues"
+  },
+  "homepage": "https://github.com/mikolertesx/testing-repository-6g#readme",
+  "devDependencies": {
+    "jest": "^27.0.6"
+  }
+}
