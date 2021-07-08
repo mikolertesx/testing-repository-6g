@@ -11,7 +11,6 @@ const getArtistAlbums = async (artist_id) => {
 		apikey: apiKey,
 	};
 
-	// ARTIST.ALBUMS.GET
 	const response = await axios.get(`${root_url}artist.albums.get`, {
 		params,
 	});
@@ -32,11 +31,15 @@ test("Get the top 10 artists in Mexico", async () => {
 
 	const artists = response.data.message.body.artist_list;
 	const artistsNames = artists.map((artist) => artist.artist.artist_name);
+
+	// SAVE DATA START
 	const artistsObject = { names: artistsNames };
 	fs.writeFileSync(
 		"./data/top10names.data",
 		JSON.stringify(artistsObject, null, 2)
 	);
+	// SAVE DATA END
+
 	expect(artistsNames.length).toBe(10);
 	expect(response.data.message.header.status_code).toBe(200);
 });
@@ -60,7 +63,7 @@ test("Get the information of top 3 artists in Mexico", async () => {
 		const newArtist = {
 			[artist.artist.artist_name]: {
 				id: artist.artist.artist_id,
-				mbid: artist.artist.artist_mbid,
+				mbid: artist.artist.artist_mbid || 'No Music Brand Id',
 				rating: artist.artist.artist_rating,
 			},
 		};
@@ -80,8 +83,8 @@ test("Get the information of top 3 artists in Mexico", async () => {
 
 test("Get the last top 5 artists from top 10 albums in Mexico", async () => {
 	const params = {
-		page: 1,
-		page_size: 10,
+		page: 2,
+		page_size: 5,
 		country: "mx",
 		apikey: apiKey,
 	};
@@ -91,17 +94,19 @@ test("Get the last top 5 artists from top 10 albums in Mexico", async () => {
 	});
 
 	const artists = response.data.message.body.artist_list;
-	const croppedArtists = artists.splice(0, 5);
-
-	const artistsId = croppedArtists.map((artist) => artist.artist.artist_id);
+	const artistsId = artists.map((artist) => artist.artist.artist_id);
 	const artistsAlbums = [];
+
+	// SAVE DATA START
 	for (const artistId of artistsId) {
 		const albums = await getArtistAlbums(artistId);
 		artistsAlbums.push(albums);
 	}
+
 	const outputFile = JSON.stringify(artistsAlbums, null, 2);
 	fs.writeFileSync("./data/bottom5top10albums.data", outputFile);
+	// SAVE DATA END
 
-	expect(croppedArtists.length).toBe(5);
+	expect(artists.length).toBe(5);
 	expect(response.data.message.header.status_code).toBe(200);
 });
