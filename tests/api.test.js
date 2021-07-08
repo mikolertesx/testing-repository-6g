@@ -32,7 +32,11 @@ test("Get the top 10 artists in Mexico", async () => {
 
 	const artists = response.data.message.body.artist_list;
 	const artistsNames = artists.map((artist) => artist.artist.artist_name);
-	fs.writeFileSync("./data/top10names.data", artistsNames.join("\n"));
+	const artistsObject = { names: artistsNames };
+	fs.writeFileSync(
+		"./data/top10names.data",
+		JSON.stringify(artistsObject, null, 2)
+	);
 	expect(artistsNames.length).toBe(10);
 	expect(response.data.message.header.status_code).toBe(200);
 });
@@ -53,14 +57,21 @@ test("Get the information of top 3 artists in Mexico", async () => {
 	// SAVE DATA START
 	const condensedLog = [];
 	artists.forEach((artist) => {
-		condensedLog.push("===");
-		condensedLog.push("artist id " + artist.artist.artist_id);
-		condensedLog.push("artist mbid " + artist.artist.artist_mbid);
-		condensedLog.push("artist name " + artist.artist.artist_name);
-		condensedLog.push("artist rating " + artist.artist.artist_rating);
+		const newArtist = {
+			[artist.artist.artist_name]: {
+				id: artist.artist.artist_id,
+				mbid: artist.artist.artist_mbid,
+				rating: artist.artist.artist_rating,
+			},
+		};
+
+		condensedLog.push(newArtist);
 	});
 
-	fs.writeFileSync("./data/top5data.data", condensedLog.join("\n"));
+	fs.writeFileSync(
+		"./data/top5data.data",
+		JSON.stringify(condensedLog, null, 2)
+	);
 	// SAVE DATA END
 
 	expect(artists.length).toBe(3);
@@ -86,9 +97,9 @@ test("Get the last top 5 artists from top 10 albums in Mexico", async () => {
 	const artistsAlbums = [];
 	for (const artistId of artistsId) {
 		const albums = await getArtistAlbums(artistId);
-		artistsAlbums.push(albums)
+		artistsAlbums.push(albums);
 	}
-	const outputFile = JSON.stringify(artistsAlbums);
+	const outputFile = JSON.stringify(artistsAlbums, null, 2);
 	fs.writeFileSync("./data/bottom5top10albums.data", outputFile);
 
 	expect(croppedArtists.length).toBe(5);
